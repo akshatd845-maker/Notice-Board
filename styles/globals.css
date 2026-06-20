@@ -25,6 +25,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Explicit color rule for form elements to guarantee visibility */
+input,
+textarea,
+select {
+  color: #18181b !important;
+  background-color: #ffffff !important;
+}
+
 /* Subtle micro-animations and transition smoothness */
 button, a, input, select, textarea {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);

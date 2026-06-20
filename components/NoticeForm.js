@@ -50,7 +50,7 @@ export default function NoticeForm({
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full rounded-xl border border-zinc-200 bg-zinc-50/30 px-4 py-2.5 text-sm outline-none hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:ring-4 focus:ring-zinc-900/5"
+          className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-black placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="e.g., Math Exam Details"
         />
       </div>
@@ -61,7 +61,7 @@ export default function NoticeForm({
           value={body}
           onChange={(e) => setBody(e.target.value)}
           rows={6}
-          className="w-full rounded-xl border border-zinc-200 bg-zinc-50/30 px-4 py-2.5 text-sm outline-none hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:ring-4 focus:ring-zinc-900/5"
+          className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-black placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter all notice details here..."
         />
       </div>
@@ -72,10 +72,10 @@ export default function NoticeForm({
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full rounded-xl border border-zinc-200 bg-zinc-50/30 px-4 py-2.5 text-sm outline-none hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:ring-4 focus:ring-zinc-900/5 appearance-none cursor-pointer"
+            className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-black focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer"
           >
             {categoryAllowed.map((c) => (
-              <option key={c} value={c}>
+              <option key={c} value={c} className="text-black bg-white">
                 {c}
               </option>
             ))}
@@ -87,10 +87,10 @@ export default function NoticeForm({
           <select
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            className="w-full rounded-xl border border-zinc-200 bg-zinc-50/30 px-4 py-2.5 text-sm outline-none hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:ring-4 focus:ring-zinc-900/5 appearance-none cursor-pointer"
+            className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-black focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer"
           >
             {priorityAllowed.map((p) => (
-              <option key={p} value={p}>
+              <option key={p} value={p} className="text-black bg-white">
                 {p}
               </option>
             ))}
@@ -105,7 +105,7 @@ export default function NoticeForm({
             type="datetime-local"
             value={publishDate}
             onChange={(e) => setPublishDate(e.target.value)}
-            className="w-full rounded-xl border border-zinc-200 bg-zinc-50/30 px-4 py-2.5 text-sm outline-none hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:ring-4 focus:ring-zinc-900/5 cursor-pointer"
+            className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-black focus:outline-none focus:ring-2 focus:ring-black cursor-pointer"
           />
           <p className="mt-1.5 text-xs text-zinc-400">Leave empty if unknown.</p>
         </div>
@@ -115,7 +115,7 @@ export default function NoticeForm({
           <input
             value={image}
             onChange={(e) => setImage(e.target.value)}
-            className="w-full rounded-xl border border-zinc-200 bg-zinc-50/30 px-4 py-2.5 text-sm outline-none hover:border-zinc-300 focus:border-zinc-900 focus:bg-white focus:ring-4 focus:ring-zinc-900/5"
+            className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-black placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-black"
             placeholder="https://images.unsplash.com/..."
           />
         </div>
