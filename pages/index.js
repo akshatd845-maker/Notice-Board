@@ -1,78 +1,117 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
+import toast from "react-hot-toast";
+import axios from "axios";
+import NoticeCard from "@/components/NoticeCard";
+import DeleteModal from "@/components/DeleteModal";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+export default function HomePage() {
+  const [notices, setNotices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+  const fetchNotices = useCallback(async () => {
+    try {
+      const res = await axios.get("/api/notices");
+      setNotices(res.data.notices);
+    } catch (err) {
+      const msg = err?.response?.data?.error || "Failed to load notices";
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-export default function Home() {
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchNotices();
+  }, [fetchNotices]);
+
+  const handleDeleteClick = (notice) => {
+    setDeleteTarget(notice);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await axios.delete(`/api/notices/${deleteTarget.id}`);
+      toast.success("Notice deleted");
+      setDeleteTarget(null);
+      fetchNotices();
+    } catch (err) {
+      const msg = err?.response?.data?.error || "Failed to delete notice";
+      toast.error(msg);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteTarget(null);
+  };
+
   return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black`}
-    >
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the index.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-screen bg-[#fafafa]">
+      <header className="sticky top-0 z-40 border-b border-zinc-200/60 bg-white/85 backdrop-blur-md">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <h1 className="text-lg font-bold text-zinc-900 tracking-tight">Notice Board</h1>
+          </div>
+          <Link
+            href="/add-notice"
+            className="rounded-xl bg-zinc-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-zinc-800 active:scale-[0.98] shadow-xs cursor-pointer"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs/pages/getting-started?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            + Add Notice
+          </Link>
         </div>
+      </header>
+
+      <main className="mx-auto max-w-5xl px-4 py-8">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-32 text-center animate-in fade-in duration-300">
+            <div className="h-6 w-6 animate-spin rounded-full border-[2.5px] border-zinc-300 border-t-zinc-900"></div>
+            <p className="mt-4 text-xs font-semibold text-zinc-400 tracking-wider uppercase">Loading notices...</p>
+          </div>
+        ) : notices.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-2xl bg-white p-8">
+            <div className="rounded-full bg-zinc-50 p-4 border border-zinc-100">
+              <span className="text-2xl">📋</span>
+            </div>
+            <h3 className="mt-4 text-sm font-bold text-zinc-800">No notices yet</h3>
+            <p className="mt-1.5 text-xs text-zinc-400 max-w-xs leading-relaxed">Create your first notice to publish announcements, events, or exam schedules.</p>
+            <Link
+              href="/add-notice"
+              className="mt-6 rounded-xl bg-zinc-900 px-5 py-2.5 text-xs font-semibold text-white hover:bg-zinc-800 active:scale-[0.98] shadow-xs cursor-pointer"
+            >
+              Add Notice
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {notices.map((notice) => (
+              <NoticeCard
+                key={notice.id}
+                notice={notice}
+                onDeleteClick={handleDeleteClick}
+              />
+            ))}
+          </div>
+        )}
       </main>
+
+      <DeleteModal
+        isOpen={!!deleteTarget}
+        noticeTitle={deleteTarget?.title}
+        onCancel={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

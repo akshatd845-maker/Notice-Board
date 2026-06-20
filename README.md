@@ -1,40 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Notice Board Application
 
-## Getting Started
+A full-stack CRUD application for managing notices built with Next.js Pages Router, Prisma ORM, and PostgreSQL.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- List all notices as responsive cards
+- Add new notices with title, body, category, priority, and optional image
+- Edit existing notices
+- Delete notices with confirmation modal
+- Red badge indicator for Urgent notices
+- Urgent notices appear first (sorted by Prisma)
+- Normal notices sorted by publishDate descending
+- Toast notifications for all operations
+- Server-side validation in API routes
+- Responsive design for mobile and desktop
+
+## Tech Stack
+
+- **Framework**: Next.js Pages Router
+- **Styling**: Tailwind CSS
+- **Database**: PostgreSQL (Neon)
+- **ORM**: Prisma
+- **HTTP Client**: Axios
+- **Notifications**: react-hot-toast
+
+## Local Setup Instructions
+
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL database (Neon or local)
+
+### Steps
+
+1. **Clone and install dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Set up environment variables**
+   
+   Create a `.env` file in the root directory with:
+   ```env
+   DATABASE_URL="postgresql://username:password@host:port/database"
+   ```
+   
+   For Neon PostgreSQL, your connection string will look like:
+   ```
+   postgresql://user:password@ep-xxx.us-east-1.aws.neon.tech/noticeboard?sslmode=require
+   ```
+
+3. **Initialize Prisma**
+   
+   Prisma 7 uses a central configuration file (`prisma.config.ts`) rather than storing database urls in the schema itself. Generate the client and apply the schema to the database:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open the application**
+   
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## Project Structure
+
+```
+├── components/
+│   ├── DeleteModal.js    # Confirmation modal for delete
+│   ├── NoticeCard.js     # Card component for displaying notices
+│   └── NoticeForm.js     # Form component for create/edit
+├── lib/
+│   └── prisma.js         # Prisma client singleton (reusable connection)
+├── pages/
+│   ├── index.js          # Home page - list all notices
+│   ├── add-notice.js     # Add notice page
+│   ├── edit/
+│   │   └── [id].js       # Edit notice page (dynamic route)
+│   └── api/
+│       └── notices/
+│           ├── index.js  # GET all, POST new notice
+│           └── [id].js   # GET, PUT, DELETE single notice
+├── prisma/
+│   └── schema.prisma     # Database schema (models and enums)
+├── prisma.config.ts      # Prisma 7 configuration file (loads database connection)
+└── styles/
+    └── globals.css       # Global styles (Tailwind CSS v4 config)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API Routes
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/notices` | List all notices (sorted by priority) |
+| POST | `/api/notices` | Create new notice |
+| GET | `/api/notices/:id` | Get single notice |
+| PUT | `/api/notices/:id` | Update notice |
+| DELETE | `/api/notices/:id` | Delete notice |
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## One Improvement with More Time
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+If given more time, I would implement **user authentication and authorization** to secure the Notice Board application. This would include:
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Login/Logout functionality with NextAuth.js
+- Role-based access control (admin vs viewer)
+- Protected API routes
+- Password protection for creating/editing notices
+- Session management with JWT
 
-## Learn More
+This would transform the public notice board into a private system where only authorized users can manage content.
 
-To learn more about Next.js, take a look at the following resources:
+## Honest AI Usage Explanation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+This Notice Board application was built with significant assistance from AI tools (Claude Code). The AI helped with:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Code generation**: Generated the complete file structure and code for all components, pages, and API routes based on the detailed requirements
+2. **Best practices**: Applied proper patterns like Prisma singleton, error handling, and validation
+3. **Styling**: Used Tailwind CSS effectively for responsive design
+4. **Project structure**: Organized the codebase following Next.js Pages Router conventions
 
-## Deploy on Vercel
+The human user provided:
+- Clear requirements and specifications
+- Database schema design decisions
+- Tech stack choices
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+This combination resulted in a fully functional CRUD application that meets all specified requirements.
